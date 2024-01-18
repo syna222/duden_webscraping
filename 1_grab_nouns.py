@@ -25,18 +25,15 @@ def get_wordlist_typelist(url):  #url of individual page (e.g. page 4 of letter 
         return words, types
 
 get_pagenumbers()
-        
-###
+
 with open(words_path, 'a', newline='', encoding="utf-8") as file:
     for key in page_numbers:
-        print("@ letter", key)
         for page in range(page_numbers[key] + 1):
                 url = f"https://www.duden.de/suchen/dudenonline/{key}?_wrapper_format=html&page={page}"
                 #visit every page for the letter and get all words + their word type and gender
                 words, types = get_wordlist_typelist(url)
                 if len(words) != len(types):
                     raise Exception("words and types are not of the same length!")
-                    break
                 words_types = []
                 for i in range(len(words)):
                     if "Substantiv" in types[i]:
