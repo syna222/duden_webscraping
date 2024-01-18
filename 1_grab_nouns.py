@@ -1,8 +1,10 @@
+from dotenv import load_dotenv
+import os
 from bs4 import BeautifulSoup
-import pandas as pd
 import requests
 
-csv_path = "wörter_und_genus.csv"
+load_dotenv()
+words_path = os.getenv("WORDS_PATH")
 page_numbers = {"ä": 0, "ö": 0, "ü": 0, "a": 0, "b": 0, "c": 0, "d": 0, "e": 0, "f": 0, "g": 0, "h": 0,"i": 0, "j": 0, "k": 0, "l": 0,"m": 0, "n": 0, "o": 0, "p": 0,"q": 0, "r": 0, "s": 0, "t": 0,"u": 0, "v": 0, "w": 0, "x": 0,"y": 0, "z": 0}
 
 def get_pagenumbers():
@@ -13,7 +15,7 @@ def get_pagenumbers():
         last_page = int(soup.find(title="Aktuelle Seite").text) - 1
         page_numbers[key] = last_page
         
-def get_wordlist_typelist(url):  #suchseite
+def get_wordlist_typelist(url):  #url of individual page (e.g. page 4 of letter b)
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
         words = soup.find_all("strong")
@@ -23,10 +25,9 @@ def get_wordlist_typelist(url):  #suchseite
         return words, types
 
 get_pagenumbers()
-print(page_numbers)
         
 ###
-with open(csv_path, 'a', newline='', encoding="utf-8") as file:
+with open(words_path, 'a', newline='', encoding="utf-8") as file:
     for key in page_numbers:
         print("@ letter", key)
         for page in range(page_numbers[key] + 1):
@@ -45,7 +46,7 @@ with open(csv_path, 'a', newline='', encoding="utf-8") as file:
                             genus = genus[1]
                         else:
                             genus = genus[0]
-                        if genus == " feminin" or genus == " maskulin" or genus == " Neutrum":  #Filtern von Eigennamen, Druckversionen etc.
+                        if genus == " feminin" or genus == " maskulin" or genus == " Neutrum":  #filters proper nouns, print versions etc.
                             words_types.append([wort, genus])
                 #append to csv:
                 for wort, genus in words_types:

@@ -43,6 +43,3 @@ with open(words_path, mode='r', newline='', encoding='latin-1') as infile, \
         row_items = [lemma, gender, str(hyphen), str(length), first, first_two, first_three, last, last_two, last_three, last_four, str(vowels), str(consonants), str(vc_ratio)]
         writer.writerow(row_items)  #passing strings would split it after every char!
             
-        
-
-    
